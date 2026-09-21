@@ -10,16 +10,18 @@ int main() {
     std::cout << "ATmega 328P Emulator\n";
     std::cout << "--------------------\n";\
 
-    std::cout << "PC: "
+    std::cout << "Initial PC: "
               << cpu.programCounter()
               << '\n';
 
-        std::cout << "SP: "
-              << cpu.stackPointer()
-              << '\n';
+    cpu.writeFlash(0, 0x00);
+    cpu.writeFlash(1, 0x00);
 
-        std::cout << "SREG: "
-              << static_cast<int>(cpu.statusRegister())
+    cpu.step();
+
+
+    std::cout << "PC after NOP: "
+              << cpu.programCounter()
               << '\n';
 
     return 0;

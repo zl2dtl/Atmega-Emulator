@@ -18,6 +18,8 @@ namespace avr {
             uint16_t programCounter() const;
             uint16_t stackPointer() const;
             uint8_t statusRegister() const;
+            
+            void writeFlash(uint16_t address, uint8_t value);
 
         private:
             std::array<uint8_t, 32> registers_{};

@@ -45,5 +45,10 @@ uint8_t CPU::statusRegister() const{
         return sreg_;
 }
 
+void CPU::writeFlash(uint16_t address, uint8_t value)
+{
+    flash_.at(address) = value;
+}
+
 }
 
