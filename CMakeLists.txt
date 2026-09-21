@@ -14,7 +14,24 @@ add_executable(atmega-emu
     src/cpu.cpp
 )
 
+add_executable(test_cpu
+    tests/test_cpu.cpp
+    src/cpu.cpp
+)
+
+target_include_directories(test_cpu
+    PRIVATE
+        include
+)
+
 target_include_directories(atmega-emu
     PRIVATE
         include
+)
+
+enable_testing()
+
+add_test(
+    NAME cpu_tests
+    COMMAND test_cpu
 )

@@ -1,3 +1,5 @@
 /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles/atmega-emu.dir
+/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles/test_cpu.dir
+/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles/test.dir
 /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles/edit_cache.dir
 /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles/rebuild_cache.dir

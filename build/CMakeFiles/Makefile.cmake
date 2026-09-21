@@ -49,4 +49,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/atmega-emu.dir/DependInfo.cmake"
+  "CMakeFiles/test_cpu.dir/DependInfo.cmake"
   )

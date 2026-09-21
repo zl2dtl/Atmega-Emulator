@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /Users/danieltliddle/Documents/Atmega328_Emulator/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/opt/homebrew/bin/ctest $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -129,12 +139,26 @@ atmega-emu/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/build
 .PHONY : atmega-emu/fast
 
+#=============================================================================
+# Target rules for targets named test_cpu
+
+# Build rule for target.
+test_cpu: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_cpu
+.PHONY : test_cpu
+
+# fast build rule for target.
+test_cpu/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/build
+.PHONY : test_cpu/fast
+
 src/cpu.o: src/cpu.cpp.o
 .PHONY : src/cpu.o
 
 # target to build an object file
 src/cpu.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/src/cpu.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/src/cpu.cpp.o
 .PHONY : src/cpu.cpp.o
 
 src/cpu.i: src/cpu.cpp.i
@@ -143,6 +167,7 @@ src/cpu.i: src/cpu.cpp.i
 # target to preprocess a source file
 src/cpu.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/src/cpu.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/src/cpu.cpp.i
 .PHONY : src/cpu.cpp.i
 
 src/cpu.s: src/cpu.cpp.s
@@ -151,6 +176,7 @@ src/cpu.s: src/cpu.cpp.s
 # target to generate assembly for a file
 src/cpu.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/src/cpu.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/src/cpu.cpp.s
 .PHONY : src/cpu.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -177,6 +203,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+tests/test_cpu.o: tests/test_cpu.cpp.o
+.PHONY : tests/test_cpu.o
+
+# target to build an object file
+tests/test_cpu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/tests/test_cpu.cpp.o
+.PHONY : tests/test_cpu.cpp.o
+
+tests/test_cpu.i: tests/test_cpu.cpp.i
+.PHONY : tests/test_cpu.i
+
+# target to preprocess a source file
+tests/test_cpu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/tests/test_cpu.cpp.i
+.PHONY : tests/test_cpu.cpp.i
+
+tests/test_cpu.s: tests/test_cpu.cpp.s
+.PHONY : tests/test_cpu.s
+
+# target to generate assembly for a file
+tests/test_cpu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cpu.dir/build.make CMakeFiles/test_cpu.dir/tests/test_cpu.cpp.s
+.PHONY : tests/test_cpu.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -185,13 +235,18 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... atmega-emu"
+	@echo "... test_cpu"
 	@echo "... src/cpu.o"
 	@echo "... src/cpu.i"
 	@echo "... src/cpu.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/test_cpu.o"
+	@echo "... tests/test_cpu.i"
+	@echo "... tests/test_cpu.s"
 .PHONY : help
 
 
