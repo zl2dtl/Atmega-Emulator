@@ -10,20 +10,21 @@ int main() {
     std::cout << "ATmega 328P Emulator\n";
     std::cout << "--------------------\n";\
 
-    std::cout << "Initial PC: "
-              << cpu.programCounter()
-              << '\n';
+    // LDI R20, 0x42
+cpu.writeFlash(0, 0x42);
+cpu.writeFlash(1, 0xE4);
 
-    cpu.writeFlash(0, 0x00);
-    cpu.writeFlash(1, 0x00);
+cpu.step();
 
-    cpu.step();
+std::cout << "PC after LDI: "
+          << cpu.programCounter()
+          << '\n';
 
+std::cout << "R20 after LDI: 0x"
+          << std::hex
+          << static_cast<int>(cpu.readRegister(20))
+          << '\n';
 
-    std::cout << "PC after NOP: "
-              << cpu.programCounter()
-              << '\n';
-
-    return 0;
+return 0;
 
 }

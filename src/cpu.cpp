@@ -18,8 +18,23 @@ void CPU::step(){
     uint16_t opcode =
         flash_[pc_ * 2] | 
         (static_cast<uint16_t>(flash_[pc_ * 2 + 1]) << 8);
-    
+
+    //NOP: no operation
     if(opcode == 0x0000){
+        pc_++;
+        return;
+    }
+
+    // LDI: Load Immediate
+    if ((opcode & 0xF000) == 0xE000){
+        uint8_t d = (opcode >> 4) & 0x0F;
+
+        uint8_t K =
+        ((opcode >> 4) & 0xF0) |
+        (opcode & 0x0F);
+
+        writeRegister(16 + d, K);
+
         pc_++;
         return;
     }
