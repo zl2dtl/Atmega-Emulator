@@ -10,6 +10,7 @@ namespace avr {
             CPU();
 
             void reset();
+            void step();
 
             uint8_t readRegister(uint8_t index) const;
             void writeRegister(uint8_t index, uint8_t value);

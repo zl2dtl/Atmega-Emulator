@@ -14,6 +14,17 @@ void CPU::reset(){
     sreg_ = 0;
 }
 
+void CPU::step(){
+    uint16_t opcode =
+        flash_[pc_ * 2] | 
+        (static_cast<uint16_t>(flash_[pc_ * 2 + 1]) << 8);
+    
+    if(opcode == 0x0000){
+        pc_++;
+        return;
+    }
+    }
+
 uint8_t CPU::readRegister(uint8_t index) const{
         return registers_.at(index);
     }
