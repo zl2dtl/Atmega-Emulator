@@ -10,7 +10,7 @@ void CPU::reset(){
     registers_.fill(0);
 
     pc_ = 0;
-    sp_ = 0;
+    sp_ = 0x08FF;
     sreg_ = 0;
 }
 

@@ -20,6 +20,7 @@ namespace avr {
 
         private:
             std::array<uint8_t, 32> registers_{};
+            std::array<uint8_t, 32768> flash_{};
 
             uint16_t pc_ = 0;
             uint16_t sp_ = 0;
