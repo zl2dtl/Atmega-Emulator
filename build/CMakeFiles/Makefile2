@@ -85,12 +85,12 @@ clean: CMakeFiles/atmega-emu.dir/clean
 CMakeFiles/atmega-emu.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles --progress-num=1,2 "Built target atmega-emu"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles --progress-num=1,2,3 "Built target atmega-emu"
 .PHONY : CMakeFiles/atmega-emu.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/atmega-emu.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/atmega-emu.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles 0
 .PHONY : CMakeFiles/atmega-emu.dir/rule
@@ -102,7 +102,7 @@ atmega-emu: CMakeFiles/atmega-emu.dir/rule
 # codegen rule for target.
 CMakeFiles/atmega-emu.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/atmega-emu.dir/build.make CMakeFiles/atmega-emu.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles --progress-num=1,2 "Finished codegen for target atmega-emu"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/danieltliddle/Documents/Atmega328_Emulator/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target atmega-emu"
 .PHONY : CMakeFiles/atmega-emu.dir/codegen
 
 # clean rule for target.

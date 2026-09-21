@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/atmega-emu.dir/src/cpu.cpp.o"
+  "CMakeFiles/atmega-emu.dir/src/cpu.cpp.o.d"
   "CMakeFiles/atmega-emu.dir/src/main.cpp.o"
   "CMakeFiles/atmega-emu.dir/src/main.cpp.o.d"
   "atmega-emu"

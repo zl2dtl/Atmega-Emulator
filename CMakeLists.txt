@@ -11,6 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(atmega-emu
     src/main.cpp
+    src/cpu.cpp
 )
 
 target_include_directories(atmega-emu
