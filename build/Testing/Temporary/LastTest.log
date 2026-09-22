@@ -1,10 +1,10 @@
-Start testing: Sep 22 14:48 NZST
+Start testing: Sep 22 14:51 NZST
 ----------------------------------------------------------
 1/1 Testing: cpu_tests
 1/1 Test: cpu_tests
 Command: "/Users/danieltliddle/Documents/Atmega328_Emulator/build/test_cpu"
 Directory: /Users/danieltliddle/Documents/Atmega328_Emulator/build
-"cpu_tests" start time: Sep 22 14:48 NZST
+"cpu_tests" start time: Sep 22 14:51 NZST
 Output:
 ----------------------------------------------------------
 LDI test passed
@@ -18,12 +18,13 @@ DEC flag test passed
 DEC negative test passed
 ADD test passed
 ADD flag test passed
+ADD overflow test passed
 <end of output>
-Test time =   0.94 sec
+Test time =   1.25 sec
 ----------------------------------------------------------
 Test Passed.
-"cpu_tests" end time: Sep 22 14:48 NZST
-"cpu_tests" time elapsed: 00:00:00
+"cpu_tests" end time: Sep 22 14:51 NZST
+"cpu_tests" time elapsed: 00:00:01
 ----------------------------------------------------------
 
-End testing: Sep 22 14:48 NZST
+End testing: Sep 22 14:51 NZST

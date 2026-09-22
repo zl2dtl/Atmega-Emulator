@@ -343,6 +343,80 @@ void testAddFlags()
     std::cout << "ADD flag test passed\n";
 }
 
+void testAddOverflow()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x7F
+    cpu.writeFlash(0, 0x0F);
+    cpu.writeFlash(1, 0xE7);
+
+    cpu.step();
+
+    // LDI R17, 0x01
+    cpu.writeFlash(2, 0x11);
+    cpu.writeFlash(3, 0xE0);
+
+    cpu.step();
+
+    // ADD R16, R17
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x0F);
+
+    cpu.step();
+
+    if (cpu.readRegister(16) != 0x80)
+    {
+        std::cerr << "ADD overflow test failed: R16 is not 0x80\n";
+        std::exit(1);
+    }
+
+    uint8_t sreg = cpu.statusRegister();
+
+    // H should be set
+    if (!(sreg & (1 << 5)))
+    {
+        std::cerr << "ADD overflow test failed: H is not set\n";
+        std::exit(1);
+    }
+
+    // V should be set
+    if (!(sreg & (1 << 3)))
+    {
+        std::cerr << "ADD overflow test failed: V is not set\n";
+        std::exit(1);
+    }
+
+    // N should be set
+    if (!(sreg & (1 << 2)))
+    {
+        std::cerr << "ADD overflow test failed: N is not set\n";
+        std::exit(1);
+    }
+
+    // S = N XOR V, therefore S should be clear
+    if (sreg & (1 << 4))
+    {
+        std::cerr << "ADD overflow test failed: S should be clear\n";
+        std::exit(1);
+    }
+
+    // Z should be clear
+    if (sreg & (1 << 1))
+    {
+        std::cerr << "ADD overflow test failed: Z should be clear\n";
+        std::exit(1);
+    }
+
+    // C should be clear
+    if (sreg & (1 << 0))
+    {
+        std::cerr << "ADD overflow test failed: C should be clear\n";
+        std::exit(1);
+    }
+
+    std::cout << "ADD overflow test passed\n";
+}
 
 int main() {
 
@@ -354,5 +428,6 @@ int main() {
     testDecNegative();
     testAdd();
     testAddFlags();
+    testAddOverflow();
     return 0;
 }   
