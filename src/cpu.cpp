@@ -197,6 +197,27 @@ if ((opcode & 0xFC00) == 0x0C00)
     pc_++;
     return;
 }
+
+//SUB: Subtract two registers
+if ((opcode & 0xFC00) == 0x1800)
+{
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t r =
+        (opcode & 0x0F) |
+        ((opcode >> 5) & 0x10);
+
+    uint8_t Rd = readRegister(d);
+    uint8_t Rr = readRegister(r);
+
+    uint8_t result = Rd - Rr;
+
+    writeRegister(d, result);
+
+    pc_++;
+    return;
+}
     }
 
 uint8_t CPU::readRegister(uint8_t index) const{

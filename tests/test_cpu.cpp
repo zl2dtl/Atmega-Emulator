@@ -418,6 +418,49 @@ void testAddOverflow()
     std::cout << "ADD overflow test passed\n";
 }
 
+void testSub()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x42
+    cpu.writeFlash(0, 0x02);
+    cpu.writeFlash(1, 0xE4);
+
+    cpu.step();
+
+    // LDI R17, 0x20
+    cpu.writeFlash(2, 0x10);
+    cpu.writeFlash(3, 0xE2);
+
+    cpu.step();
+
+    // SUB R16, R17
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x1B);
+
+    cpu.step();
+
+    if (cpu.readRegister(16) != 0x22)
+    {
+        std::cerr << "SUB test failed: R16 is not 0x22\n";
+        std::exit(1);
+    }
+
+    if (cpu.readRegister(17) != 0x20)
+    {
+        std::cerr << "SUB test failed: R17 was modified\n";
+        std::exit(1);
+    }
+
+    if (cpu.programCounter() != 3)
+    {
+        std::cerr << "SUB test failed: PC is not 3\n";
+        std::exit(1);
+    }
+
+    std::cout << "SUB test passed\n";
+}
+
 int main() {
 
     testLdi();
@@ -429,5 +472,6 @@ int main() {
     testAdd();
     testAddFlags();
     testAddOverflow();
+    testSub();
     return 0;
 }   
