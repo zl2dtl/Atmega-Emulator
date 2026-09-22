@@ -38,6 +38,23 @@ void CPU::step(){
         pc_++;
         return;
     }
+
+    // MOV: Copy register
+if ((opcode & 0xFC00) == 0x2C00)
+{
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t r =
+        (opcode & 0x0F) |
+        ((opcode >> 5) & 0x10);
+
+    writeRegister(d, readRegister(r));
+
+    pc_++;
+    return;
+}
+
     }
 
 uint8_t CPU::readRegister(uint8_t index) const{
