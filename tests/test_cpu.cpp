@@ -507,6 +507,99 @@ void testSubOverflow()
     assert(cpu.programCounter() == 3);
 }
 
+void testAdc()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0xFF
+    cpu.writeFlash(0, 0xFF);
+    cpu.writeFlash(1, 0xEF);
+
+    // LDI R17, 0x01
+    cpu.writeFlash(2, 0x11);
+    cpu.writeFlash(3, 0xE0);
+
+    // ADD R16, R17
+    // 0xFF + 0x01 = 0x00, Carry = 1
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x0F);
+
+    // ADC R16, R17
+    // 0x00 + 0x01 + Carry = 0x02
+    cpu.writeFlash(6, 0x01);
+    cpu.writeFlash(7, 0x1F);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x02);
+    assert(cpu.readRegister(17) == 0x01);
+    assert(cpu.programCounter() == 4);
+}
+
+void testAdcOverflow()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x7F
+    cpu.writeFlash(0, 0x0F);
+    cpu.writeFlash(1, 0xE7);
+
+    // LDI R17, 0x00
+    cpu.writeFlash(2, 0x10);
+    cpu.writeFlash(3, 0xE0);
+
+    // Set Carry using:
+    // LDI R18, 0xFF
+    cpu.writeFlash(4, 0x2F);
+    cpu.writeFlash(5, 0xEF);
+
+    // LDI R19, 0x01
+    cpu.writeFlash(6, 0x31);
+    cpu.writeFlash(7, 0xE0);
+
+    // ADD R18, R19
+    // 0xFF + 0x01 = 0x00, C = 1
+    cpu.writeFlash(8, 0x23);
+    cpu.writeFlash(9, 0x0F);
+
+    // ADC R16, R17
+    // 0x7F + 0x00 + 1 = 0x80
+    cpu.writeFlash(10, 0x01);
+    cpu.writeFlash(11, 0x1F);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x80);
+
+    uint8_t sreg = cpu.statusRegister();
+
+    // H = 1
+    assert((sreg & (1 << 5)) != 0);
+
+    // V = 1
+    assert((sreg & (1 << 3)) != 0);
+
+    // N = 1
+    assert((sreg & (1 << 2)) != 0);
+
+    // S = 0
+    assert((sreg & (1 << 4)) == 0);
+
+    // Z = 0
+    assert((sreg & (1 << 1)) == 0);
+
+    // C = 0
+    assert((sreg & (1 << 0)) == 0);
+}
+
 int main() {
 
     testLdi();
@@ -520,5 +613,7 @@ int main() {
     testAddOverflow();
     testSub();
     testSubOverflow();
+    testAdc();
+    testAdcOverflow();
     return 0;
 }   
