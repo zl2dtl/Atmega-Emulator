@@ -642,6 +642,52 @@ void testSbc()
     assert(cpu.programCounter() == 6);
 }
 
+void testSbcZeroFlag()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x42
+    cpu.writeFlash(0, 0x02);
+    cpu.writeFlash(1, 0xE4);
+
+    // LDI R17, 0x42
+    cpu.writeFlash(2, 0x12);
+    cpu.writeFlash(3, 0xE4);
+
+    // SUB R16, R17
+    // 0x42 - 0x42 = 0x00
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x1B);
+
+    // LDI R18, 0x20
+    cpu.writeFlash(6, 0x20);
+    cpu.writeFlash(7, 0xE2);
+
+    // LDI R19, 0x20
+    cpu.writeFlash(8, 0x30);
+    cpu.writeFlash(9, 0xE2);
+
+    // SBC R18, R19
+    // 0x20 - 0x20 - 0 = 0x00
+    cpu.writeFlash(10, 0x23);
+    cpu.writeFlash(11, 0x09);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x00);
+    assert(cpu.readRegister(18) == 0x00);
+
+    // Z should remain set
+    assert((cpu.statusRegister() & (1 << 1)) != 0);
+}
+
+
+
 int main() {
 
     testLdi();
