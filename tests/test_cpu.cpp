@@ -699,8 +699,7 @@ void testSbcZeroFlagCumulative()
     cpu.writeFlash(3, 0xE4);
 
     // SUB R16, R17
-    // 0x41 - 0x42 = 0xFF
-    // Z = 0
+    // 0x41 - 0x42 = 0xFF Z = 0
     cpu.writeFlash(4, 0x01);
     cpu.writeFlash(5, 0x1B);
 
@@ -730,6 +729,34 @@ void testSbcZeroFlagCumulative()
     assert((cpu.statusRegister() & (1 << 1)) == 0);
 }
 
+void testAnd()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0xF0
+    cpu.writeFlash(0, 0x00);
+    cpu.writeFlash(1, 0xEF);
+
+    // LDI R17, 0x0F
+    cpu.writeFlash(2, 0x1F);
+    cpu.writeFlash(3, 0xE0);
+
+    // AND R16, R17
+    // 0xF0 & 0x0F = 0x00
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x21);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x00);
+    assert(cpu.readRegister(17) == 0x0F);
+    assert(cpu.programCounter() == 3);
+}
+
+
+
 int main() {
 
     testLdi();
@@ -748,5 +775,6 @@ int main() {
     testSbc();
     testSbcZeroFlag();
     testSbcZeroFlagCumulative();
+    testAnd();
     return 0;
 }   

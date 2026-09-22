@@ -386,6 +386,51 @@ if ((opcode & 0xFC00) == 0x0800)
     return;
 }
 
+// AND: Logical AND
+if ((opcode & 0xFC00) == 0x2000)
+{
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t r =
+        (opcode & 0x0F) |
+        ((opcode >> 5) & 0x10);
+
+    uint8_t Rd = readRegister(d);
+    uint8_t Rr = readRegister(r);
+
+    uint8_t result = Rd & Rr;
+
+    writeRegister(d, result);
+
+    // V: always cleared
+    sreg_ &= ~SREG_V;
+
+    // N: negative
+    if (result & 0x80)
+        sreg_ |= SREG_N;
+    else
+        sreg_ &= ~SREG_N;
+
+    // S: N XOR V
+    if (((sreg_ & SREG_N) != 0) ^
+        ((sreg_ & SREG_V) != 0))
+        sreg_ |= SREG_S;
+    else
+        sreg_ &= ~SREG_S;
+
+    // Z: Zero
+    if (result == 0)
+        sreg_ |= SREG_Z;
+    else
+        sreg_ &= ~SREG_Z;
+
+    pc_++;
+    return;
+}
+
+
+
     }
 
 uint8_t CPU::readRegister(uint8_t index) const{
