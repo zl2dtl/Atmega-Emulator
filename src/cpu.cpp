@@ -316,6 +316,69 @@ if ((opcode & 0xFC00) == 0x1C00)
     pc_++;
     return;
 }
+
+// SBC: Subtract register and Carry
+if ((opcode & 0xFC00) == 0x0800)
+{
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t r =
+        (opcode & 0x0F) |
+        ((opcode >> 5) & 0x10);
+
+    uint8_t Rd = readRegister(d);
+    uint8_t Rr = readRegister(r);
+
+    uint8_t carry =
+        (sreg_ & (1 << 0)) ? 1 : 0;
+
+    uint8_t result = Rd - Rr - carry;
+
+    writeRegister(d, result);
+
+    // H: Half Carry / borrow
+    if ((Rd & 0x0F) < ((Rr & 0x0F) + carry))
+        sreg_ |= (1 << 5);
+    else
+        sreg_ &= ~(1 << 5);
+
+    // V: Two's-complement overflow
+    if (((Rd ^ Rr) & (Rd ^ result) & 0x80) != 0)
+        sreg_ |= SREG_V;
+    else
+        sreg_ &= ~SREG_V;
+
+    // N: Negative
+    if (result & 0x80)
+        sreg_ |= SREG_N;
+    else
+        sreg_ &= ~SREG_N;
+
+    // S: N XOR V
+    if (((sreg_ & SREG_N) != 0) ^
+        ((sreg_ & SREG_V) != 0))
+        sreg_ |= SREG_S;
+    else
+        sreg_ &= ~SREG_S;
+
+    // Z: Zero
+    // SBC has cumulative Z
+    if (result == 0)
+        sreg_ |= SREG_Z;
+    else
+        sreg_ &= ~SREG_Z;
+
+    // C: Carry / borrow
+    if (static_cast<uint16_t>(Rr) + carry > Rd)
+        sreg_ |= (1 << 0);
+    else
+        sreg_ &= ~(1 << 0);
+
+    pc_++;
+    return;
+}
+
     }
 
 uint8_t CPU::readRegister(uint8_t index) const{

@@ -600,6 +600,48 @@ void testAdcOverflow()
     assert((sreg & (1 << 0)) == 0);
 }
 
+void testSbc()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x42
+    cpu.writeFlash(0, 0x02);
+    cpu.writeFlash(1, 0xE4);
+
+    // LDI R17, 0x20
+    cpu.writeFlash(2, 0x10);
+    cpu.writeFlash(3, 0xE2);
+
+    // LDI R18, 0xFF
+    cpu.writeFlash(4, 0x2F);
+    cpu.writeFlash(5, 0xEF);
+
+    // LDI R19, 0x01
+    cpu.writeFlash(6, 0x31);
+    cpu.writeFlash(7, 0xE0);
+
+    // ADD R18, R19
+    // 0xFF + 0x01 = 0x00, C = 1
+    cpu.writeFlash(8, 0x23);
+    cpu.writeFlash(9, 0x0F);
+
+    // SBC R16, R17
+    // 0x42 - 0x20 - 1 = 0x21
+    cpu.writeFlash(10, 0x01);
+    cpu.writeFlash(11, 0x09);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x21);
+    assert(cpu.readRegister(17) == 0x20);
+    assert(cpu.programCounter() == 6);
+}
+
 int main() {
 
     testLdi();
