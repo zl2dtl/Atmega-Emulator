@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 #include "avr/cpu.hpp"
 
@@ -461,6 +462,51 @@ void testSub()
     std::cout << "SUB test passed\n";
 }
 
+void testSubOverflow()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x80
+    cpu.writeFlash(0, 0x00);
+    cpu.writeFlash(1, 0xE8);
+
+    // LDI R17, 0x01
+    cpu.writeFlash(2, 0x11);
+    cpu.writeFlash(3, 0xE0);
+
+    // SUB R16, R17
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x1B);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(16) == 0x7F);
+
+    uint8_t sreg = cpu.statusRegister();
+
+    // H = 1
+    assert((sreg & (1 << 5)) != 0);
+
+    // V = 1
+    assert((sreg & (1 << 3)) != 0);
+
+    // N = 0
+    assert((sreg & (1 << 2)) == 0);
+
+    // S = 1
+    assert((sreg & (1 << 4)) != 0);
+
+    // Z = 0
+    assert((sreg & (1 << 1)) == 0);
+
+    // C = 0
+    assert((sreg & (1 << 0)) == 0);
+
+    assert(cpu.programCounter() == 3);
+}
+
 int main() {
 
     testLdi();
@@ -473,5 +519,6 @@ int main() {
     testAddFlags();
     testAddOverflow();
     testSub();
+    testSubOverflow();
     return 0;
 }   
