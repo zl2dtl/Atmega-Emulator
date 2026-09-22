@@ -1,4 +1,5 @@
 #include "avr/cpu.hpp"
+#include <iostream>
 
 namespace avr{
 
@@ -335,6 +336,12 @@ if ((opcode & 0xFC00) == 0x0800)
 
     uint8_t result = Rd - Rr - carry;
 
+    std::cout << "SBC: Rd=" << static_cast<int>(Rd)
+          << " Rr=" << static_cast<int>(Rr)
+          << " C=" << static_cast<int>(carry)
+          << " result=" << static_cast<int>(result)
+          << '\n';
+
     writeRegister(d, result);
 
     // H: Half Carry / borrow
@@ -364,11 +371,11 @@ if ((opcode & 0xFC00) == 0x0800)
 
     // Z: Zero
     // SBC has cumulative Z
-    if (result == 0)
+    if (result == 0 && (sreg_ & SREG_Z))
         sreg_ |= SREG_Z;
     else
         sreg_ &= ~SREG_Z;
-
+    
     // C: Carry / borrow
     if (static_cast<uint16_t>(Rr) + carry > Rd)
         sreg_ |= (1 << 0);

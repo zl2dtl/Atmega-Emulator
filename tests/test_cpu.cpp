@@ -628,7 +628,7 @@ void testSbc()
     // SBC R16, R17
     // 0x42 - 0x20 - 1 = 0x21
     cpu.writeFlash(10, 0x01);
-    cpu.writeFlash(11, 0x09);
+    cpu.writeFlash(11, 0x0B);
 
     cpu.step();
     cpu.step();
@@ -670,7 +670,7 @@ void testSbcZeroFlag()
     // SBC R18, R19
     // 0x20 - 0x20 - 0 = 0x00
     cpu.writeFlash(10, 0x23);
-    cpu.writeFlash(11, 0x09);
+    cpu.writeFlash(11, 0x0B);
 
     cpu.step();
     cpu.step();
@@ -686,7 +686,49 @@ void testSbcZeroFlag()
     assert((cpu.statusRegister() & (1 << 1)) != 0);
 }
 
+void testSbcZeroFlagCumulative()
+{
+    avr::CPU cpu;
 
+    // LDI R16, 0x41
+    cpu.writeFlash(0, 0x02);
+    cpu.writeFlash(1, 0xE4);
+
+    // LDI R17, 0x42
+    cpu.writeFlash(2, 0x01);
+    cpu.writeFlash(3, 0xE4);
+
+    // SUB R16, R17
+    // 0x41 - 0x42 = 0xFF
+    // Z = 0
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x1B);
+
+    // LDI R18, 0x20
+    cpu.writeFlash(6, 0x20);
+    cpu.writeFlash(7, 0xE2);
+
+    // LDI R19, 0x20
+    cpu.writeFlash(8, 0x30);
+    cpu.writeFlash(9, 0xE2);
+
+    // SBC R18, R19
+    // 0x20 - 0x20 - 0 = 0x00
+    cpu.writeFlash(10, 0x23);
+    cpu.writeFlash(11, 0x0B);
+
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+    cpu.step();
+
+    assert(cpu.readRegister(18) == 0x00);
+
+    // Z must remain clear because it was already clear
+    assert((cpu.statusRegister() & (1 << 1)) == 0);
+}
 
 int main() {
 
@@ -703,5 +745,8 @@ int main() {
     testSubOverflow();
     testAdc();
     testAdcOverflow();
+    testSbc();
+    testSbcZeroFlag();
+    testSbcZeroFlagCumulative();
     return 0;
 }   
