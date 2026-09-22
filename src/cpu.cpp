@@ -1,4 +1,5 @@
 #include "avr/cpu.hpp"
+#include <iostream>
 
 namespace avr{
 
@@ -56,6 +57,49 @@ if ((opcode & 0xFC00) == 0x2C00)
         ((opcode >> 5) & 0x10);
 
     writeRegister(d, readRegister(r));
+
+    pc_++;
+    return;
+}
+    
+// INC: Increment Register
+if ((opcode & 0xFE0F) == 0x9403)
+{
+    std::cout << "INC matched, opcode = 0x"
+          << std::hex << opcode << '\n';
+
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t oldValue = readRegister(d);
+    uint8_t result = oldValue + 1;
+
+    writeRegister(d, result);
+
+    // Z flag
+    if (result == 0)
+        sreg_ |= SREG_Z;
+    else
+        sreg_ &= ~SREG_Z;
+
+    // N flag
+    if (result & 0x80)
+        sreg_ |= SREG_N;
+    else
+        sreg_ &= ~SREG_N;
+
+    // V flag: positive -> negative
+    if (oldValue == 0x7F)
+        sreg_ |= SREG_V;
+    else
+        sreg_ &= ~SREG_V;
+
+    // S = N XOR V
+    if (((sreg_ & SREG_N) != 0) ^
+        ((sreg_ & SREG_V) != 0))
+        sreg_ |= SREG_S;
+    else
+        sreg_ &= ~SREG_S;
 
     pc_++;
     return;
