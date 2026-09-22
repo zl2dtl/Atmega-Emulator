@@ -103,10 +103,42 @@ std::cout << "PC before INC: "
     std::cout << "INC test passed\n";
 }
 
+void testDec()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x42
+    cpu.writeFlash(0, 0x02);
+    cpu.writeFlash(1, 0xE4);
+
+    cpu.step();
+
+    // DEC R16
+    cpu.writeFlash(2, 0x0A);
+    cpu.writeFlash(3, 0x95);
+
+    cpu.step();
+
+    if (cpu.readRegister(16) != 0x41)
+    {
+        std::cerr << "DEC test failed: R16 is not 0x41\n";
+        std::exit(1);
+    }
+
+    if (cpu.programCounter() != 2)
+    {
+        std::cerr << "DEC test failed: PC is not 2\n";
+        std::exit(1);
+    }
+
+    std::cout << "DEC test passed\n";
+}
+
 int main() {
 
     testLdi();
     testMov();
     testInc();
+    testDec();
     return 0;
 }   
