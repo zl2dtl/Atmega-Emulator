@@ -198,7 +198,7 @@ if ((opcode & 0xFC00) == 0x0C00)
     return;
 }
 
-//SUB: Subtract two registers
+// SUB: Subtract one register from another
 if ((opcode & 0xFC00) == 0x1800)
 {
     uint8_t d =
@@ -214,6 +214,43 @@ if ((opcode & 0xFC00) == 0x1800)
     uint8_t result = Rd - Rr;
 
     writeRegister(d, result);
+
+    // H: Half Carry / borrow
+    if ((Rd & 0x0F) < (Rr & 0x0F))
+        sreg_ |= (1 << 5);
+    else
+        sreg_ &= ~(1 << 5);
+
+    // V: Two's-complement overflow
+    if (((Rd ^ Rr) & (Rd ^ result) & 0x80) != 0)
+        sreg_ |= SREG_V;
+    else
+        sreg_ &= ~SREG_V;
+
+    // N: Negative
+    if (result & 0x80)
+        sreg_ |= SREG_N;
+    else
+        sreg_ &= ~SREG_N;
+
+    // S: N XOR V
+    if (((sreg_ & SREG_N) != 0) ^
+        ((sreg_ & SREG_V) != 0))
+        sreg_ |= SREG_S;
+    else
+        sreg_ &= ~SREG_S;
+
+    // Z: Zero
+    if (result == 0)
+        sreg_ |= SREG_Z;
+    else
+        sreg_ &= ~SREG_Z;
+
+    // C: Carry / borrow
+    if (Rd < Rr)
+        sreg_ |= (1 << 0);
+    else
+        sreg_ &= ~(1 << 0);
 
     pc_++;
     return;
