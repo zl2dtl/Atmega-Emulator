@@ -1,6 +1,12 @@
 #include "avr/cpu.hpp"
 
 namespace avr{
+
+constexpr uint8_t SREG_Z = 1 << 1;
+constexpr uint8_t SREG_N = 1 << 2;
+constexpr uint8_t SREG_V = 1 << 3;
+constexpr uint8_t SREG_S = 1 << 4; 
+ 
     CPU::CPU(){
         reset();
     }
