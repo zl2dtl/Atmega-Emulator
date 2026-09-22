@@ -140,6 +140,63 @@ if ((opcode & 0xFE0F) == 0x940A)
     pc_++;
     return;
 }
+
+// ADD: Add two registers
+if ((opcode & 0xFC00) == 0x0C00)
+{
+    uint8_t d =
+        (opcode >> 4) & 0x1F;
+
+    uint8_t r =
+        (opcode & 0x0F) |
+        ((opcode >> 5) & 0x10);
+
+    uint8_t Rd = readRegister(d);
+    uint8_t Rr = readRegister(r);
+    uint8_t result = Rd + Rr;
+
+    writeRegister(d, result);
+
+    // H: Half Carry
+    if (((Rd & 0x0F) + (Rr & 0x0F)) & 0x10)
+        sreg_ |= (1 << 5);
+    else
+        sreg_ &= ~(1 << 5);
+
+    // V: Two's-complement overflow
+    if ((~(Rd ^ Rr) & (Rd ^ result) & 0x80) != 0)
+        sreg_ |= SREG_V;
+    else
+        sreg_ &= ~SREG_V;
+
+    // N: Negative
+    if (result & 0x80)
+        sreg_ |= SREG_N;
+    else
+        sreg_ &= ~SREG_N;
+
+    // S: N XOR V
+    if (((sreg_ & SREG_N) != 0) ^
+        ((sreg_ & SREG_V) != 0))
+        sreg_ |= SREG_S;
+    else
+        sreg_ &= ~SREG_S;
+
+    // Z: Zero
+    if (result == 0)
+        sreg_ |= SREG_Z;
+    else
+        sreg_ &= ~SREG_Z;
+
+    // C: Carry
+    if ((static_cast<uint16_t>(Rd) + Rr) & 0x100)
+        sreg_ |= 1 << 0;
+    else
+        sreg_ &= ~(1 << 0);
+
+    pc_++;
+    return;
+}
     }
 
 uint8_t CPU::readRegister(uint8_t index) const{

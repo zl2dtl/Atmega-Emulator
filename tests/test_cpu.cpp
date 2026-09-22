@@ -228,6 +228,121 @@ void testDecNegative()
 
     std::cout << "DEC negative test passed\n";
 }
+void testAdd()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0x20
+    cpu.writeFlash(0, 0x00);
+    cpu.writeFlash(1, 0xE2);
+
+    cpu.step();
+
+    // LDI R17, 0x22
+    cpu.writeFlash(2, 0x12);
+    cpu.writeFlash(3, 0xE2);
+
+    cpu.step();
+
+    // ADD R16, R17
+    // Opcode: 0x0F01
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x0F);
+
+    cpu.step();
+
+    if (cpu.readRegister(16) != 0x42)
+    {
+        std::cerr << "ADD test failed: R16 is not 0x42\n";
+        std::exit(1);
+    }
+
+    if (cpu.readRegister(17) != 0x22)
+    {
+        std::cerr << "ADD test failed: R17 was modified\n";
+        std::exit(1);
+    }
+
+    if (cpu.programCounter() != 3)
+    {
+        std::cerr << "ADD test failed: PC is not 3\n";
+        std::exit(1);
+    }
+
+    std::cout << "ADD test passed\n";
+}
+
+
+void testAddFlags()
+{
+    avr::CPU cpu;
+
+    // LDI R16, 0xFF
+    cpu.writeFlash(0, 0x0F);
+    cpu.writeFlash(1, 0xEF);
+
+    cpu.step();
+
+    // LDI R17, 0x01
+    cpu.writeFlash(2, 0x11);
+    cpu.writeFlash(3, 0xE0);
+
+    cpu.step();
+
+    // ADD R16, R17
+    cpu.writeFlash(4, 0x01);
+    cpu.writeFlash(5, 0x0F);
+
+    cpu.step();
+
+    uint8_t sreg = cpu.statusRegister();
+
+
+    if (cpu.readRegister(16) != 0x00)
+    {
+        std::cerr << "ADD flag test failed: R16 is not 0x00\n";
+        std::exit(1);
+    }
+
+    if (!(sreg & (1 << 5))) // H
+    {
+        std::cerr << "ADD flag test failed: H is not set\n";
+        std::exit(1);
+    }
+
+    if (!(sreg & (1 << 1))) // Z
+    {
+        std::cerr << "ADD flag test failed: Z is not set\n";
+        std::exit(1);
+    }
+
+    if (!(sreg & (1 << 0))) // C
+    {
+        std::cerr << "ADD flag test failed: C is not set\n";
+        std::exit(1);
+    }
+
+    if (sreg & (1 << 3)) // V
+    {
+        std::cerr << "ADD flag test failed: V should be clear\n";
+        std::exit(1);
+    }
+
+    if (sreg & (1 << 2)) // N
+    {
+        std::cerr << "ADD flag test failed: N should be clear\n";
+        std::exit(1);
+    }
+
+    if (sreg & (1 << 4)) // S
+    {
+        std::cerr << "ADD flag test failed: S should be clear\n";
+        std::exit(1);
+    }
+
+    std::cout << "ADD flag test passed\n";
+}
+
 
 int main() {
 
@@ -237,5 +352,7 @@ int main() {
     testDec();
     testDecFlags();
     testDecNegative();
+    testAdd();
+    testAddFlags();
     return 0;
 }   
